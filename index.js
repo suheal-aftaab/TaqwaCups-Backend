@@ -1,18 +1,20 @@
-
 require("dotenv").config();
-console.log("📌 Loaded MONGO_URI:", process.env.MONGO_URI);
-
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 
-// ✅ Middleware
-app.use(express.json());
-app.use(cors());
+// ✅ Fix CORS issue
+app.use(cors({
+    origin: "*",  // Allow all origins (for testing)
+    methods: ["GET", "POST", "PUT", "DELETE"],  
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-// ✅ Connect to MongoDB
+app.use(express.json());
+
+// ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
