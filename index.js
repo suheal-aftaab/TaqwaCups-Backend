@@ -6,11 +6,10 @@ const mongoose = require("mongoose");
 const app = express();
 
 // ✅ Fix CORS issue
-app.use(cors({
-    origin: "*",  // Allow all origins (for testing)
-    methods: ["GET", "POST", "PUT", "DELETE"],  
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(cors());  // Simple way to allow all origins
+
+// ✅ Middleware for preflight requests (OPTIONS)
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -25,16 +24,6 @@ mongoose.connect(process.env.MONGO_URI, {
 // ✅ Import API Routes
 const appointmentRoutes = require("./routes/appointments");
 app.use("/api/appointments", appointmentRoutes);
-
-// ✅ Debugging: Show all registered routes
-setTimeout(() => {
-    console.log("✅ Registered Routes:");
-    app._router.stack.forEach((middleware) => {
-        if (middleware.route) { 
-            console.log(`➡ ${middleware.route.path} [${Object.keys(middleware.route.methods).join(', ').toUpperCase()}]`);
-        }
-    });
-}, 2000);
 
 // ✅ Root Route (For Testing)
 app.get("/", (req, res) => {
